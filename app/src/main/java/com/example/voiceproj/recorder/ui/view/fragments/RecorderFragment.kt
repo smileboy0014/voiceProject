@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -67,6 +68,7 @@ class RecorderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRecordingBinding.bind(view)
+        recordingListFragment = RecordingListFragment.newInstance()
 
         initUI()
 
@@ -95,11 +97,11 @@ class RecorderFragment : Fragment() {
             resumeRecording()
         }
 
-//        binding.fabRecordings.setOnClickListener {
-//            recordingListFragment = RecordingListFragment.newInstance()
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.framelayout, recordingListFragment).commit()
-//        }
+        binding.fabRecordings.setOnClickListener {
+            Toast.makeText(mainActivity, "녹음파일 리스트로 이동합니다.", Toast.LENGTH_SHORT).show()
+            mainActivity.replaceFragment(recordingListFragment)
+
+        }
 
         if(recorderViewModel?.recorderState == RecorderState.Stopped){
             binding.fabStopRecording.isEnabled = false
@@ -113,6 +115,7 @@ class RecorderFragment : Fragment() {
         //Get the viewmodel factory
 
         val factory = InjectorUtils.provideRecorderViewModelFactory(requireActivity().externalCacheDir.toString(), mainActivity.applicationContext.contentResolver)
+//        val factory = InjectorUtils.provideRecorderViewModelFactory(mainActivity.getFilePath(), mainActivity.applicationContext.contentResolver)
 
         //Getting the viewmodel
         recorderViewModel = ViewModelProviders.of(this, factory).get(RecorderViewModel::class.java)

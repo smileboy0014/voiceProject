@@ -2,8 +2,10 @@ package com.example.voiceproj.ui.main.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -12,6 +14,7 @@ import com.example.voiceproj.databinding.ActivityMainBinding
 import com.example.voiceproj.recorder.ui.view.fragments.RecorderFragment
 import com.example.voiceproj.ui.main.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.fragment_recording_list.*
 
 
 class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItemSelectedListener{
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItem
     private lateinit var communityFragment: CommunityFragment
     private lateinit var chatFragment: ChatFragment
     private lateinit var profileFragment: ProfileFragment
+    private lateinit var recorderFragment: RecorderFragment
     private lateinit var binding : ActivityMainBinding
 
     val TAG : String = HomeFragment.TAG
@@ -34,11 +38,15 @@ class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItem
         // 하단 네비게이션 뷰를 바인딩하기(클릭시 이벤트 발생을 위해)
         binding.bottomNav.setOnNavigationItemSelectedListener(this)
 
+        recorderFragment = RecorderFragment.newInstance();
+
         // 처음 앱 기동 시 homeFragment 화면 보이도록 강제로 띄우기
         homeFragment = HomeFragment.newInstance()
         supportFragmentManager.beginTransaction()
             .replace(R.id.framelayout, homeFragment).commit()
-        }
+
+
+    }
 
     // 하단 네비게이션 아이콘 클릭할 때 마다 Fragment 교체해 주는 메서드
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -87,5 +95,23 @@ class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItem
             .replace(R.id.framelayout, fragment).commit()
 
     }
+
+    fun setSupportActionBarFun(toolbar: Toolbar){
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    // toolBar back버튼 누르면 뒤로가기 됨
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                //onBackPressed()
+                 this.replaceFragment(recorderFragment)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 }

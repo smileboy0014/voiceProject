@@ -18,7 +18,6 @@ import java.util.*
 
 class RecorderRepository(savePath : String, contentResolver: ContentResolver){
 
-
     companion object {
         @Volatile
         private var instance: RecorderRepository? = null
@@ -31,10 +30,11 @@ class RecorderRepository(savePath : String, contentResolver: ContentResolver){
 
     private var output: String? = null
     private var mediaRecorder: MediaRecorder? = null
-//    private val dir: File = File(Environment.getExternalStorageDirectory().absolutePath + "/soundrecorder/")
+//    private val dir: File = File(Environment.getExternalStorageDirectory().absolutePath + "/Music/")
     private val dir: File = File("$savePath/recorder/")
+//    private val dir: File = File("$savePath/")
 
-
+    private val path: String = savePath
     private var recordingTime: Long = 0
     private var timer = Timer()
     private val recordingTimeString = MutableLiveData<String>()
@@ -44,6 +44,9 @@ class RecorderRepository(savePath : String, contentResolver: ContentResolver){
         try{
             // create a File object for the parent directory
             val recorderDirectory = File("$savePath/recorder/")
+//            val recorderDirectory = File(Environment.getExternalStorageDirectory().absolutePath+"/Music/")
+//            val recorderDirectory = File("$savePath/")
+
             // have the object build the directory structure, if needed.
             recorderDirectory.mkdirs()
         }catch (e: IOException){
@@ -53,18 +56,12 @@ class RecorderRepository(savePath : String, contentResolver: ContentResolver){
         if(dir.exists() && dir.listFiles() != null){
             val count = dir.listFiles().size
             output = "$savePath/recorder/recording$count.mp3"
+//            output = Environment.getExternalStorageDirectory().absolutePath + "/Music/recording"+count+".mp3"
         }
 //        else {
-//            output = Environment.DIRECTORY_MUSIC + "/recorder/recording0.mp3"
+//            output = Environment.DIRECTORY_MUSIC + "/recording0.mp3"
 //        }
 
-//        mediaRecorder = MediaRecorder().apply {
-//
-//            setAudioSource(MediaRecorder.AudioSource.MIC)
-//            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-//            setOutputFile(output)
-//            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-//        }
 
         mediaRecorder = MediaRecorder()
 
@@ -98,7 +95,7 @@ class RecorderRepository(savePath : String, contentResolver: ContentResolver){
 
 //        // Add a media item that other apps shouldn't see until the item is
 //// fully written to the media store.
-//        val resolver = contentResolver
+//        val resolver = applicationContext.contentResolver
 //
 //        // Find all audio files on the primary external storage device.
 //// On API <= 28, use VOLUME_EXTERNAL instead.
@@ -147,7 +144,9 @@ class RecorderRepository(savePath : String, contentResolver: ContentResolver){
 
         if(dir.exists()){
             val count = dir.listFiles().size
-            output = Environment.getExternalStorageDirectory().absolutePath + "/soundrecorder/recording"+count+".mp3"
+//            output = Environment.getExternalStorageDirectory().absolutePath + "/Music/recording"+count+".mp3"
+            output = "$path/recorder/recording$count.mp3"
+
         }
 
         mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)

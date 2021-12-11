@@ -9,19 +9,20 @@ import android.widget.Toast
 import java.io.File
 import java.nio.file.Files
 
-class RecordingFileRepository{
+class RecordingFileRepository(savePath:String){
     companion object {
         @Volatile
         private var instance: RecordingFileRepository? = null
 
-        fun getInstance() =
+        fun getInstance(savePath: String) =
             instance ?: synchronized(this) {
-                instance ?: RecordingFileRepository().also { instance = it }
+                instance ?: RecordingFileRepository(savePath).also { instance = it }
             }
 
 
         fun playRecording(context: Context, title: String){
-            val path = Uri.parse(Environment.getExternalStorageDirectory().absolutePath+"/soundrecorder/$title")
+//            val path = Uri.parse(Environment.getExternalStorageDirectory().absolutePath+"/soundrecorder/$title")
+            val path = Uri.parse("${context.externalCacheDir}/recorder/$title")
 
 
             val manager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -39,7 +40,10 @@ class RecordingFileRepository{
         }
     }
 
-    private val recorderDirectory = File(Environment.getExternalStorageDirectory().absolutePath+"/soundrecorder/")
+    private val path: String = savePath
+
+//    private val recorderDirectory = File(Environment.getExternalStorageDirectory().absolutePath+"/soundrecorder/")
+private val recorderDirectory = File("$path/recorder/")
     private var file : ArrayList<String>? = null
 
     init {

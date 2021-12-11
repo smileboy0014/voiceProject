@@ -11,8 +11,8 @@ object InjectorUtils {
         return RecorderViewModelProvider(recorderRepository)
     }
 
-    fun provideRecordingViewModelFactory(): RecordingFileViewModelProvider {
-        val recordingRepository = RecordingFileRepository.getInstance()
-        return RecordingFileViewModelProvider(recordingRepository)
+    fun provideRecordingViewModelFactory(savePath: String): RecordingFileViewModelProvider {
+        val recordingRepository = RecordingFileRepository.getInstance(savePath)
+        return RecordingFileViewModelProvider(recordingRepository as RecordingFileRepository)
     }
 }
